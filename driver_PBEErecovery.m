@@ -2,16 +2,14 @@
 % reoccupancy assessment of a single building for a single intensity level
 
 % Input data consists of building model info and simulated component-level
-% damage and conesequence data for a suite of realizations, likely assessed
+% damage and consequence data for a suite of realizations, likely assessed
 % as part of a FEMA P-58 analysis. Inputs are read in as matlab variables
-% direclty from matlab data files.
+% directly from matlab data files.
 
 % Output data is saved to a specified outputs directory and is saved into a
 % single matlab variable as at matlab data file.
 
-clear
-close all
-clc 
+clc; clear; close all
 rehash
 
 %% Define User Inputs
@@ -34,7 +32,7 @@ systems = readtable(['static_tables' filesep 'systems.csv']);
 subsystems = readtable(['static_tables' filesep 'subsystems.csv']);
 impeding_factor_medians = readtable(['static_tables' filesep 'impeding_factors.csv']);
 
-%% Combine compoment attributes into recovery filters to expidite recovery assessment
+%% Combine component attributes into recovery filters to expidite recovery assessment
 [damage.fnc_filters] = fn_preprocessing(damage.comp_ds_table);
 
 %% Simulate ATC 138 Impeding Factors
@@ -48,9 +46,7 @@ impeding_factor_medians = readtable(['static_tables' filesep 'impeding_factors.c
     repair_time_options, systems, functionality.impeding_factors, regional_impact.surge_factor);
 
 %% Calculate the Recovery of Building Reoccupancy and Function
-[ functionality.recovery ] = main_functionality( damage, building_model, ...
-    damage_consequences, functionality.utilities, functionality_options, ...
-    tenant_units, subsystems );
+[ functionality.recovery ] = main_functionality( damage, building_model, damage_consequences, functionality.utilities, functionality_options, tenant_units, subsystems );
 
 %% Save Outputs
 if ~exist(outputs_dir,'dir')
