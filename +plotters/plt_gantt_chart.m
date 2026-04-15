@@ -29,7 +29,7 @@ function [] = plt_gantt_chart( p_idx, recovery, full_repair_time, workers, sched
 % Returns
 % -------
 % 
-%% Intial Setup
+%% Initial Setup
 if ~exist(plot_dir,'dir')
     mkdir(plot_dir)
 end
@@ -42,7 +42,8 @@ sys = fieldnames(impede.contractor_mob);
 recovery_trajectory.reoc = recovery.reoccupancy.recovery_trajectory.recovery_day(p_idx,:);
 recovery_trajectory.func = recovery.functional.recovery_trajectory.recovery_day(p_idx,:);
 recovery_trajectory.level_of_repair = recovery.reoccupancy.recovery_trajectory.percent_recovered;
-recovery_trajectory.ful_rep = ones(1,length(recovery_trajectory.level_of_repair)) * ceil(full_repair_time(p_idx));
+% recovery_trajectory.ful_rep = ones(1,length(recovery_trajectory.level_of_repair)) * ceil(full_repair_time(p_idx));
+recovery_trajectory.ful_rep = repmat(ceil(full_repair_time(p_idx)), size(recovery_trajectory.level_of_repair));
 
 % Collect Worker Data
 worker_data.total_workers = workers.total_workers(p_idx,:);
@@ -95,31 +96,116 @@ pos = [0.25    0.63     0.7    0.34;...
 
 % Impedance Time
 subplot('Position',pos(1,:))
-x = categorical(labs_imp);
-x = reordercats(x,labs_imp);
-G = barh(x,y_imp,'stacked');
-G(1).HandleVisibility = 'off';
-G(2).DisplayName = 'Repair Time';
-set(G(1),'Visible','off')
-G(2).FaceColor = [0.6, 0.6, 0.6];
-G(2).FaceAlpha = 0.5;
-G(2).EdgeAlpha = 0;
-% set(gca,'YColor','k')
+
+if ~isempty(y_imp)
+
+    x = categorical(labs_imp);
+    x = reordercats(x,labs_imp);
+    G = barh(x,y_imp,'stacked');
+
+    if numel(G) > 1
+        set(G(1),'Visible','off')
+        G(2).DisplayName = 'Repair Time';
+        G(2).FaceColor = [0.6 0.6 0.6];
+        G(2).FaceAlpha = 0.5;
+        G(2).EdgeAlpha = 0;
+    else
+        G.DisplayName = 'Repair Time';
+        G.FaceColor = [0.6 0.6 0.6];
+        G.FaceAlpha = 0.5;
+        G.EdgeAlpha = 0;
+    end
+
+else
+    text(0.5,0.5,'No Impedance','HorizontalAlignment','center')
+end
+
 fn_format_subplot(gca,x_limit,[],[],'Impedance Time')
+
+
+% subplot('Position',pos(1,:))
+% x = categorical(labs_imp);
+% x = reordercats(x,labs_imp);
+% G = barh(x,y_imp,'stacked');
+% if length(G) > 1
+%     set(G(1),'Visible','off')
+%     G(2).DisplayName = 'Repair Time';
+%     G(2).FaceColor = [0.6 0.6 0.6];
+%     G(2).FaceAlpha = 0.5;
+%     G(2).EdgeAlpha = 0;
+% else
+%     G.DisplayName = 'Repair Time';
+%     G.FaceColor = [0.6 0.6 0.6];
+%     G.FaceAlpha = 0.5;
+%     G.EdgeAlpha = 0;
+% end
+% G = barh(x,y_imp,'stacked');
+% G(1).HandleVisibility = 'off';
+% G(2).DisplayName = 'Repair Time';
+% set(G(1),'Visible','off')
+% G(2).FaceColor = [0.6, 0.6, 0.6];
+% G(2).FaceAlpha = 0.5;
+% G(2).EdgeAlpha = 0;
+% set(gca,'YColor','k')
+% fn_format_subplot(gca,x_limit,[],[],'Impedance Time')
+
+
 
 % Repair Time
 subplot('Position',pos(2,:))
-x = categorical(labs_rep);
-x = reordercats(x,labs_rep);
-H = barh(x,y_rep,'stacked');
-H(1).HandleVisibility = 'off';
-H(2).DisplayName = 'Repair Time';
-set(H(1),'Visible','off')
-H(2).FaceColor = [0.1, 0.1, 0.1];
-H(2).FaceAlpha = 0.5;
-H(2).EdgeAlpha = 0;
-% set(gca,'YColor','k')
+
+if ~isempty(y_rep)
+
+    x = categorical(labs_rep);
+    x = reordercats(x,labs_rep);
+    H = barh(x,y_rep,'stacked');
+
+    if numel(H) > 1
+        set(H(1),'Visible','off')
+        H(2).DisplayName = 'Repair Time';
+        H(2).FaceColor = [0.1 0.1 0.1];
+        H(2).FaceAlpha = 0.5;
+        H(2).EdgeAlpha = 0;
+    else
+        H.DisplayName = 'Repair Time';
+        H.FaceColor = [0.1 0.1 0.1];
+        H.FaceAlpha = 0.5;
+        H.EdgeAlpha = 0;
+    end
+
+else
+    text(0.5,0.5,'No Repairs','HorizontalAlignment','center')
+end
+
 fn_format_subplot(gca,x_limit,[],[],'Repair Time')
+
+
+% subplot('Position',pos(2,:))
+% x = categorical(labs_rep);
+% x = reordercats(x,labs_rep);
+% H = barh(x,y_rep,'stacked');
+% 
+% if length(H) > 1
+%     set(H(1),'Visible','off')
+%     H(2).DisplayName = 'Repair Time';
+%     H(2).FaceColor = [0.1 0.1 0.1];
+%     H(2).FaceAlpha = 0.5;
+%     H(2).EdgeAlpha = 0;
+% else
+%     H.DisplayName = 'Repair Time';
+%     H.FaceColor = [0.1 0.1 0.1];
+%     H.FaceAlpha = 0.5;
+%     H.EdgeAlpha = 0;
+% end
+% H = barh(x,y_rep,'stacked');
+% H(1).HandleVisibility = 'off';
+% H(2).DisplayName = 'Repair Time';
+% set(H(1),'Visible','off')
+% H(2).FaceColor = [0.1, 0.1, 0.1];
+% H(2).FaceAlpha = 0.5;
+% H(2).EdgeAlpha = 0;
+% set(gca,'YColor','k')
+% fn_format_subplot(gca,x_limit,[],[],'Repair Time')
 
 % Workers
 subplot('Position',pos(3,:))
@@ -146,19 +232,48 @@ close
 end
 
 function [] = fn_format_subplot(ax,x_limit,y_lab,x_lab,tle)
-    ax.XGrid = 'on';
-    ax.XMinorGrid = 'on';
-    xlim([0,x_limit])
-    box on
-    set(gca,'fontname','times')
-    set(gca,'fontsize',9)
-    if ~isempty(y_lab)
-        ylabel(y_lab)
-    end
-    if ~isempty(x_lab)
-        xlabel(x_lab)
-    else
-        set(gca,'XTickLabel',[])
-    end
-    title(tle)
+
+if isempty(x_limit) || ~isfinite(x_limit) || x_limit <= 0
+    x_limit = 1;
 end
+
+ax.XGrid = 'on';
+ax.XMinorGrid = 'on';
+xlim([0 x_limit])
+box on
+set(gca,'fontname','times')
+set(gca,'fontsize',9)
+
+if ~isempty(y_lab)
+    ylabel(y_lab)
+end
+
+if ~isempty(x_lab)
+    xlabel(x_lab)
+else
+    set(gca,'XTickLabel',[])
+end
+
+title(tle)
+
+end
+
+
+
+% function [] = fn_format_subplot(ax,x_limit,y_lab,x_lab,tle)
+%     ax.XGrid = 'on';
+%     ax.XMinorGrid = 'on';
+%     xlim([0,x_limit])
+%     box on
+%     set(gca,'fontname','times')
+%     set(gca,'fontsize',9)
+%     if ~isempty(y_lab)
+%         ylabel(y_lab)
+%     end
+%     if ~isempty(x_lab)
+%         xlabel(x_lab)
+%     else
+%         set(gca,'XTickLabel',[])
+%     end
+%     title(tle)
+% end

@@ -13,6 +13,7 @@ clc; clear; close all
 rehash
 
 %% Define User Inputs
+% model_name = 'haseltonRCMF_12story';
 model_name = 'ICSB'; % Name of the model;
                      % inputs are expected to be in a directory with this name
                      % outputs will save to a directory with this name
